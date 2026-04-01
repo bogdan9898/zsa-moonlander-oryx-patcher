@@ -1,0 +1,41 @@
+diff -u /home/bogdan/Desktop/zsa_moonlander_mission-control_source/keymap.c /home/bogdan/Desktop/zsa_moonlander_mission-control_source_changed_1/keymap.c
+--- /home/bogdan/Desktop/zsa_moonlander_mission-control_source/keymap.c	2026-03-31 19:32:30.000000000 +0300
++++ /home/bogdan/Desktop/zsa_moonlander_mission-control_source_changed_1/keymap.c	2026-04-01 23:29:37.592335729 +0300
+@@ -123,8 +123,27 @@
+   return (RGB){ f * rgb.r, f * rgb.g, f * rgb.b };
+ }
+ 
++uint32_t custom_os_settings(uint32_t trigger_time, void *cb_arg) {
++  os_variant_t host = detected_host_os();
++  uint16_t retry_ms = 500;
++
++  if (host == OS_MACOS || host == OS_IOS) {
++    // On Mac, keep GUI as-is
++    keymap_config.swap_lalt_lgui = false;
++    keymap_config.swap_ralt_rgui = false;
++    retry_ms                     = 0;
++  } else {
++    // On Windows/Linux, swap GUI→Ctrl so your CMD key acts as Ctrl
++    keymap_config.swap_lalt_lgui = true;
++    keymap_config.swap_ralt_rgui = true;
++    retry_ms                     = 0;
++  }
++  return retry_ms; // non-zero = retry after this many ms
++}
++
+ void keyboard_post_init_user(void) {
+   rgb_matrix_enable();
++  defer_exec(100, custom_os_settings, NULL);
+ }
+ 
+ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
+diff -u /home/bogdan/Desktop/zsa_moonlander_mission-control_source/rules.mk /home/bogdan/Desktop/zsa_moonlander_mission-control_source_changed_1/rules.mk
+--- /home/bogdan/Desktop/zsa_moonlander_mission-control_source/rules.mk	2026-03-31 19:32:30.000000000 +0300
++++ /home/bogdan/Desktop/zsa_moonlander_mission-control_source_changed_1/rules.mk	2026-04-01 23:20:21.926392615 +0300
+@@ -4,3 +4,5 @@
+ RGB_MATRIX_CUSTOM_KB = yes
+ TAP_DANCE_ENABLE = yes
+ SPACE_CADET_ENABLE = no
++OS_DETECTION_ENABLE = yes
++DEFERRED_EXEC_ENABLE = yes
+\ No newline at end of file
