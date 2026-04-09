@@ -10,12 +10,12 @@ diff -u /home/bogdan/Desktop/zsa_moonlander_mission-control_source/keymap.c /hom
 +  uint16_t retry_ms = 500;
 +
 +  if (host == OS_MACOS || host == OS_IOS) {
-+    // On Mac, keep GUI as-is
++    // On Mac/Windows, keep GUI as-is
 +    keymap_config.swap_lalt_lgui = false;
 +    keymap_config.swap_ralt_rgui = false;
 +    retry_ms                     = 0;
 +  } else {
-+    // On Windows/Linux, swap GUI→Ctrl so your CMD key acts as Ctrl
++    // On Linux, swap GUI->Ctrl so your CMD key acts as Ctrl
 +    keymap_config.swap_lalt_lgui = true;
 +    keymap_config.swap_ralt_rgui = true;
 +    retry_ms                     = 0;
